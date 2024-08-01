@@ -1,0 +1,37 @@
+create table employee(
+employeeId bigint primary key,
+employeeName varchar(20),
+departmentId bigint
+);
+create table department(
+departmentId bigint primary key,
+departmentName varchar(20)
+);
+alter table employee add foreign key(departmentId) references department(departmentId);
+create table project(
+projectId bigint primary key,
+projectName varchar(20),
+departmentId bigint 
+);
+alter table project add foreign key(departmentId) references department(departmentId);
+insert into employee values(1,'john',1),(2,'jane',2),(3,'mark',1),(4,'emily',3),(5,'karen',5);
+insert into department values(1,'sales'),(2,'hr'),(3,'it'),(4,'marketing'),(5,null);
+insert into project values(101,'projectA',1),(102,'projectB',2),(103,'projectC',3),(104,'projectD',4),(105,'projectE',null);
+select * from employee;
+select * from department;
+select * from project;
+select employeeName,departmentName
+from employee,department
+where employee.departmentId=department.departmentId;
+select e.employeeId,e.employeeName,e.departmentId,d.departmentName from employee e,department d where e.departmentId=d.departmentId;
+select e.employeeName,d.departmentName from employee e left outer join department d on e.departmentId=d.departmentId;
+select e.employeeName,p.projectName from employee e join project p on e.departmentId=p.departmentId;
+select e.employeeName from employee e where e.departmentId>(select d.departmentId from department d where d.departmentName='hr');
+select p.projectName,d.departmentName from project p join department d on p.departmentId=d.departmentId;
+select employeeName from employee where departmentId is null;
+-- Find departments that have no employees
+select d.departmentId,d.departmentName from department d left join employee e on d.departmentId=e.departmentId where e.employeeId is null; 
+-- Find all departments along with the number of employees in each department
+select d.departmentID, d.departmentName, count(e.employeeID) AS NumberOfEmployees
+from department d left join employee e ON d.departmentID = e.departmentID
+group by d.departmentID;
